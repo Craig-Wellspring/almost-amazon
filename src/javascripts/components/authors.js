@@ -1,17 +1,19 @@
+import clearDom from '../helpers/data/clearDom';
+
 const showAuthors = (array) => {
   document.querySelector('#add-button').innerHTML = '<button class="btn btn-success btn-lg mb-4" id="add-author-btn">Add An Author</button>';
 
-  document.querySelector('#store').innerHTML = '';
-  document.querySelector('#form-container').innerHTML = '';
+  clearDom();
 
   array.forEach((item) => {
     document.querySelector('#store').innerHTML += `
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">${item.first_name} ${item.last_name}</h5>
-          <h6 class="card-title">${item.email}</h6>
-          <button class="btn btn-info" id="edit-author-btn--${item.firebaseKey}">Edit Author</button>
-          <button class="btn btn-danger" id="delete-author--${item.firebaseKey}">Delete Author</button>
+          <hr>
+          <i class="btn btn-success fas fa-eye text-black" id="view-author-btn--${item.firebaseKey}"></i>
+          <i id="edit-author-btn--${item.firebaseKey}" class="fas fa-edit btn btn-info"></i>
+          <i id="delete-author--${item.firebaseKey}" class="btn btn-danger fas fa-trash-alt text-black"></i>
         </div>
       </div>`;
   });

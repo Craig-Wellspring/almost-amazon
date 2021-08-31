@@ -14,6 +14,9 @@ import {
   getSingleBook,
   updateBook
 } from '../helpers/data/bookData';
+import viewBook from '../components/viewBook';
+import viewAuthor from '../components/viewAuthor';
+import { viewAuthorDetails, viewBookDetails } from '../helpers/data/mergedData';
 
 const domEvents = () => {
   document.querySelector('#main-container').addEventListener('click', (e) => {
@@ -39,6 +42,7 @@ const domEvents = () => {
         title: document.querySelector('#title').value,
         image: document.querySelector('#image').value,
         price: document.querySelector('#price').value,
+        description: document.querySelector('#description').value,
         sale: document.querySelector('#sale').checked,
         author_id: document.querySelector('#author_id').value
       };
@@ -61,11 +65,19 @@ const domEvents = () => {
         title: document.querySelector('#title').value,
         image: document.querySelector('#image').value,
         price: document.querySelector('#price').value,
+        description: document.querySelector('#description').value,
         sale: document.querySelector('#sale').checked,
         author_id: document.querySelector('#author_id').value,
         firebaseKey
       };
       updateBook(bookObj).then(showBooks);
+    }
+
+    // CLICK EVENT FOR VIEW BOOK BUTTON
+    if (e.target.id.includes('view-book-btn')) {
+      const [, firebaseKey] = e.target.id.split('--');
+
+      viewBookDetails(firebaseKey).then(viewBook);
     }
 
     // ADD CLICK EVENT FOR DELETING AN AUTHOR
@@ -79,7 +91,6 @@ const domEvents = () => {
 
     // ADD CLICK EVENT FOR SHOWING FORM FOR ADDING AN AUTHOR
     if (e.target.id.includes('add-author-btn')) {
-      console.warn('CLICKED ADD AUTHOR BUTTON', e.target.id);
       addAuthorForm();
     }
 
@@ -89,6 +100,7 @@ const domEvents = () => {
       const authObj = {
         first_name: document.querySelector('#authorFirstName').value,
         last_name: document.querySelector('#authorLastName').value,
+        description: document.querySelector('#authorDescription').value,
         email: document.querySelector('#email').value,
       };
 
@@ -109,10 +121,18 @@ const domEvents = () => {
       const authorObj = {
         first_name: document.querySelector('#authorFirstName').value,
         last_name: document.querySelector('#authorLastName').value,
+        description: document.querySelector('#authorDescription').value,
         email: document.querySelector('#email').value,
         firebaseKey
       };
       updateAuthor(authorObj).then(showAuthors);
+    }
+
+    // CLICK EVENT FOR VIEW AUTHOR BUTTON
+    if (e.target.id.includes('view-author-btn')) {
+      const [, firebaseKey] = e.target.id.split('--');
+
+      viewAuthorDetails(firebaseKey).then(viewAuthor);
     }
   });
 };
