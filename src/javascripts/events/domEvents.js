@@ -4,7 +4,6 @@ import { showBooks } from '../components/books';
 import { showAuthors } from '../components/authors';
 import {
   createAuthor,
-  deleteAuthor,
   getSingleAuthor,
   updateAuthor
 } from '../helpers/data/authorData';
@@ -16,7 +15,7 @@ import {
 } from '../helpers/data/bookData';
 import viewBook from '../components/viewBook';
 import viewAuthor from '../components/viewAuthor';
-import { viewAuthorDetails, viewBookDetails } from '../helpers/data/mergedData';
+import { deleteAuthorAndBooks, viewAuthorDetails, viewBookDetails } from '../helpers/data/mergedData';
 
 const domEvents = () => {
   document.querySelector('#main-container').addEventListener('click', (e) => {
@@ -85,7 +84,7 @@ const domEvents = () => {
       // eslint-disable-next-line no-alert
       if (window.confirm('Want to delete?')) {
         const [, id] = e.target.id.split('--');
-        deleteAuthor(id).then(showAuthors);
+        deleteAuthorAndBooks(id).then(showAuthors);
       }
     }
 

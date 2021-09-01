@@ -1,21 +1,30 @@
-import { getSingleAuthor } from './authorData';
-import { booksByAuthor, getSingleBook } from './bookData';
+import { deleteAuthor, getSingleAuthor } from './authorData';
+import { booksByAuthor, deleteBook, getSingleBook } from './bookData';
 
-const viewBookDetails = (bookFirebaseKey) => (async () => {
-  const book = await getSingleBook(bookFirebaseKey);
-  const authorObject = await getSingleAuthor(book.author_id);
+const viewBookDetails = async (bookFirebaseKey) => {
+  const bookObject = await getSingleBook(bookFirebaseKey);
+  const authorObject = await getSingleAuthor(bookObject.author_id);
 
-  return { authorObject, ...book };
-})().catch(console.warn);
+  return { authorObject, ...bookObject };
+};
 
-const viewAuthorDetails = (authorFirebaseKey) => (async () => {
+const viewAuthorDetails = async (authorFirebaseKey) => {
   const author = await getSingleAuthor(authorFirebaseKey);
   const bookList = await booksByAuthor(authorFirebaseKey);
 
   return { ...author, bookList };
-})().catch(console.warn);
+};
+
+const deleteAuthorAndBooks = (authorFirebaseKey) => new Promise((resolve, reject) => {
+  booksByAuthor(authorFirebaseKey).then((authorsBookArray) => {
+    const deleteBooks = authorsBookArray.map((book) => deleteBook(book.firebaseKey));
+
+    Promise.all(deleteBooks).then(() => resolve(deleteAuthor(authorFirebaseKey)));
+  }).catch(reject);
+});
 
 export {
   viewBookDetails,
-  viewAuthorDetails
+  viewAuthorDetails,
+  deleteAuthorAndBooks
 };
