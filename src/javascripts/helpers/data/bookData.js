@@ -55,11 +55,19 @@ const booksOnSale = () => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+// FILTER BOOKS BY AUTHOR ID
+const booksByAuthor = (authorId) => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/books.json?orderBy="author_id"&equalTo="${authorId}"`)
+    .then((response) => resolve(Object.values(response.data)))
+    .catch(reject);
+});
+
 export {
   getBooks,
   getSingleBook,
   createBook,
   updateBook,
   deleteBook,
-  booksOnSale
+  booksOnSale,
+  booksByAuthor
 };
