@@ -5,8 +5,8 @@ import firebaseConfig from '../../../api/apiKeys';
 const dbUrl = firebaseConfig.databaseURL;
 
 // GET BOOKS
-const getBooks = () => new Promise((resolve, reject) => {
-  axios.get(`${dbUrl}/books.json`)
+const getBooks = (uid) => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/books.json?orderBy="uid"&equalTo="${uid}"`)
     .then((response) => resolve(Object.values(response.data)))
     .catch((error) => reject(error));
 });
@@ -19,10 +19,10 @@ const getSingleBook = (firebaseKey) => new Promise((resolve, reject) => {
 });
 
 // DELETE BOOK
-const deleteBook = (firebaseKey) => new Promise((resolve, reject) => {
+const deleteBook = (firebaseKey, uid) => new Promise((resolve, reject) => {
   axios.delete(`${dbUrl}/books/${firebaseKey}.json`)
     .then(() => {
-      getBooks().then(resolve);
+      getBooks(uid).then(resolve);
     })
     .catch(reject);
 });
@@ -34,25 +34,27 @@ const createBook = (bookObj) => new Promise((resolve, reject) => {
       const body = { firebaseKey: response.data.name };
       axios.patch(`${dbUrl}/books/${response.data.name}.json`, body)
         .then(() => {
-          getBooks().then(resolve);
+          getBooks(bookObj.uid).then(resolve);
         });
     }).catch(reject);
 });
 
 // UPDATE BOOK
-const updateBook = (bookObj) => new Promise((resolve, reject) => {
+const updateBook = (uid, bookObj) => new Promise((resolve, reject) => {
   axios.patch(`${dbUrl}/books/${bookObj.firebaseKey}.json`, bookObj)
-    .then(() => getBooks().then(resolve))
+    .then(() => getBooks(uid).then(resolve))
     .catch(reject);
 });
 
 // SEARCH BOOKS
 
 // FILTER BOOKS ON SALE
-const booksOnSale = () => new Promise((resolve, reject) => {
-  axios.get(`${dbUrl}/books.json?orderBy="sale"&equalTo=true`)
-    .then((response) => resolve(Object.values(response.data)))
-    .catch(reject);
+const booksOnSale = (uid) => new Promise((resolve, reject) => {
+  getBooks(uid)
+    .then((userBooks) => {
+      const onSaleBooks = userBooks.filter((book) => book.sale);
+      resolve(onSaleBooks);
+    }).catch(reject);
 });
 
 // FILTER BOOKS BY AUTHOR ID
