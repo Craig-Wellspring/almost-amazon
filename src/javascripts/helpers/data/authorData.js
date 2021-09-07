@@ -5,8 +5,8 @@ import firebaseConfig from '../../../api/apiKeys';
 const dbUrl = firebaseConfig.databaseURL;
 
 // GET AUTHORS
-const getAuthors = () => new Promise((resolve, reject) => {
-  axios.get(`${dbUrl}/authors.json`)
+const getAuthors = (uid) => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/authors.json?orderBy="uid"&equalTo="${uid}"`)
     .then((response) => resolve(Object.values(response.data)))
     .catch((error) => reject(error));
 });
@@ -19,10 +19,10 @@ const getSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
 });
 
 // DELETE AUTHOR
-const deleteAuthor = (firebaseKey) => new Promise((resolve, reject) => {
+const deleteAuthor = (firebaseKey, uid) => new Promise((resolve, reject) => {
   axios.delete(`${dbUrl}/authors/${firebaseKey}.json`)
     .then(() => {
-      getAuthors().then(resolve);
+      getAuthors(uid).then(resolve);
     })
     .catch(reject);
 });
@@ -49,10 +49,12 @@ const updateAuthor = (authorObj) => new Promise((resolve, reject) => {
 // SEARCH AUTHORS
 
 // FILTER FAVORITE AUTHORS
-const favoriteAuthors = () => new Promise((resolve, reject) => {
-  axios.get(`${dbUrl}/authors.json?orderBy="favorite"&equalTo=true`)
-    .then((response) => resolve(Object.values(response.data)))
-    .catch(reject);
+const favoriteAuthors = (uid) => new Promise((resolve, reject) => {
+  getAuthors(uid)
+    .then((authors) => {
+      const favAuthors = authors.filter((author) => author.favorite);
+      resolve(favAuthors);
+    }).catch(reject);
 });
 
 export {

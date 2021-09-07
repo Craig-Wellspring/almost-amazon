@@ -1,7 +1,7 @@
 import clearDom from '../../helpers/data/clearDom';
 import selectAuthor from './selectAuthor';
 
-const addBookForm = (obj = {}) => {
+const addBookForm = (uid, obj = {}) => {
   clearDom();
 
   document.querySelector('#form-container').innerHTML = `
@@ -31,7 +31,7 @@ const addBookForm = (obj = {}) => {
       <button type="submit" id="${obj.firebaseKey ? `update-book--${obj.firebaseKey}` : 'submit-book'}" class="btn btn-primary">Submit Book</button>
     </form>`;
 
-  selectAuthor(obj.author_id || '');
+  selectAuthor(uid, obj.author_id || '');
 };
 
 export default addBookForm;

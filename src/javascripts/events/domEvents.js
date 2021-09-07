@@ -17,21 +17,20 @@ import viewBook from '../components/viewBook';
 import viewAuthor from '../components/viewAuthor';
 import { deleteAuthorAndBooks, viewAuthorDetails, viewBookDetails } from '../helpers/data/mergedData';
 
-const domEvents = () => {
+const domEvents = (uid) => {
   document.querySelector('#main-container').addEventListener('click', (e) => {
     // CLICK EVENT FOR DELETING A BOOK
     if (e.target.id.includes('delete-book')) {
       // eslint-disable-next-line no-alert
       if (window.confirm('Want to delete?')) {
         const [, id] = e.target.id.split('--');
-        deleteBook(id).then(showBooks);
+        deleteBook(id, uid).then(showBooks);
       }
     }
 
     // CLICK EVENT FOR SHOWING FORM FOR ADDING A BOOK
     if (e.target.id.includes('add-book-btn')) {
-      console.warn('CLICKED ADD BOOK BUTTON', e.target.id);
-      addBookForm();
+      addBookForm(uid);
     }
 
     // CLICK EVENT FOR SUBMITTING FORM FOR ADDING A BOOK
@@ -43,7 +42,8 @@ const domEvents = () => {
         price: document.querySelector('#price').value,
         description: document.querySelector('#description').value,
         sale: document.querySelector('#sale').checked,
-        author_id: document.querySelector('#author_id').value
+        author_id: document.querySelector('#author_id').value,
+        uid
       };
 
       createBook(bookObj).then(showBooks);
@@ -53,7 +53,7 @@ const domEvents = () => {
     if (e.target.id.includes('edit-book-btn')) {
       const [, id] = e.target.id.split('--');
 
-      getSingleBook(id).then((bookObj) => addBookForm(bookObj));
+      getSingleBook(id).then((bookObj) => addBookForm(uid, bookObj));
     }
 
     // CLICK EVENT FOR EDITING A BOOK
@@ -69,7 +69,7 @@ const domEvents = () => {
         author_id: document.querySelector('#author_id').value,
         firebaseKey
       };
-      updateBook(bookObj).then(showBooks);
+      updateBook(uid, bookObj).then(showBooks);
     }
 
     // CLICK EVENT FOR VIEW BOOK BUTTON
@@ -84,7 +84,7 @@ const domEvents = () => {
       // eslint-disable-next-line no-alert
       if (window.confirm('Want to delete?')) {
         const [, id] = e.target.id.split('--');
-        deleteAuthorAndBooks(id).then(showAuthors);
+        deleteAuthorAndBooks(id, uid).then(showAuthors);
       }
     }
 
